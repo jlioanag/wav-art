@@ -40,7 +40,7 @@ def gen_color():
 
 def load_rules(cap=10000):
     rules = []
-    with open("slide_data_random.txt") as f:
+    with open("./data/slide_data_random.txt") as f:
         raw = f.readlines()
     for index, rule in enumerate(raw):
         rules.append(int(rule.rstrip('\n')))
@@ -52,8 +52,8 @@ def load_rules(cap=10000):
 
 if __name__ == "__main__":
 
-    RULE_CAP = 10000
-    COLOR_THRESH = 1.0
+    RULE_CAP = 500
+    COLOR_THRESH = 0.5
 
     rules = load_rules(RULE_CAP)
     print(rules)
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     plt.axis("off")
     plt.imshow(full, interpolation='none')
     
-    output_file = 'slide_'+str(RULE_CAP)+'_'+str(COLOR_THRESH)+'.png'
+    output_file = './examples/slide_'+str(RULE_CAP)+'_'+str(COLOR_THRESH)+'.png'
     plt.savefig(output_file)
 
     plt.show()

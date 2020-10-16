@@ -52,13 +52,26 @@ def load_rules(cap=10000):
 
 if __name__ == "__main__":
 
-    rules = load_rules()
+    RULE_CAP = 10000
+    COLOR_THRESH = 1.0
+
+    rules = load_rules(RULE_CAP)
     print(rules)
 
     emp = np.zeros((100, 100), dtype=np.int8).astype('float')
     cmap = plt.cm.get_cmap('gray')
     norm = plt.Normalize(emp.min(), emp.max())
     full = cmap(norm(emp))
+
+    for i in range(100):
+        for j in range(100):
+            full[i, j, :4][3] = 0
+
+    color = [0.0, 0.0, 0.0]
+    while sum(color) <= COLOR_THRESH:
+        color = gen_color()
+    print(color)
+    opacity = 1 / RULE_CAP
     
     for index, rule in enumerate(rules):
 
@@ -67,32 +80,25 @@ if __name__ == "__main__":
         cmap = plt.cm.get_cmap('gray')
         norm = plt.Normalize(x.min(), x.max())
         rgba = cmap(norm(x))
-        
-        color = [0.0, 0.0, 0.0]
-        while sum(color) <= 0.5:
-            color = gen_color()
-        # print(color)
+
         if index % 100 == 0:
             print("At generation: ", index)
-
-        # for i in range(100):
-        #     for j in range(100):
-        #         if (full[i, j, :4][3] > 0.0):
-        #             full[i, j, :4][3] -= 0.5
-
-
+        
+        
 
         for i in range(100):
             for j in range(100):
                 if (rgba[i, j, :3][0] == 1.0 and rgba[i, j, :3][1] == 1.0 and rgba[i, j, :3][2] == 1.0):
-                    # print(rgba[i, j, :3])
                     full[i, j, :3][0] = color[0]
                     full[i, j, :3][1] = color[1]
-                    full[i, j, :3][2] = color[2]
-
-                    
-                    # full[i, j, :3] = rgba[i, j, :3]
-    
+                    full[i, j, :3][2] = color[2]     
+                    full[i, j, :4][3] += opacity
+     
+   
     plt.axis("off")
     plt.imshow(full, interpolation='none')
+    
+    output_file = 'slide_'+str(RULE_CAP)+'_'+str(COLOR_THRESH)+'.png'
+    plt.savefig(output_file)
+
     plt.show()
